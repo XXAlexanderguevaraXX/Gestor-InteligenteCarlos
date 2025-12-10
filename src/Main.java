@@ -68,8 +68,6 @@ public class Main {
 
     public static void menuGestion() {
         String op = "";
-
-        // El bucle do-while mantiene al usuario en el submenú (persistencia)
         do {
             System.out.println("\n--- 📚 GESTIÓN DE ALUMNOS Y CURSOS ---");
             System.out.println("------------------------------------");
@@ -83,43 +81,35 @@ public class Main {
             System.out.print("Elige una opción: ");
             op = scanner.nextLine();
 
-            // El switch evalúa la opción elegida
             switch (op) {
-                case "1.1": // Listar Cursos
+                case "1.1":
                     listarCursos();
                     break;
-
-                case "1.2": // Consultar Curso por ID
+                case "1.2":
                     System.out.print("ID del Curso: ");
                     String idC = scanner.nextLine();
                     Curso c = gestor.consultarCurso(idC);
-                    System.out.println(c != null ? c : "⚠️ Curso no encontrado.");
+                    System.out.println(c != null ? "✅ " + c : "❌ Curso no encontrado.");
                     break;
-
-                case "1.3": // Consultar Alumno por ID
+                case "1.3":
                     System.out.print("ID del Alumno: ");
                     String idA = scanner.nextLine();
                     Alumno a = gestor.consultarAlumno(idA);
-                    System.out.println(a != null ? a : "⚠️ Alumno no encontrado.");
+                    System.out.println(a != null ? "✅ " + a : "❌ Alumno no encontrado.");
                     break;
-
-                case "1.4": // Registrar Nuevo Curso
+                case "1.4":
                     registrarNuevoCurso();
                     break;
-
-                case "1.5": // Registrar Nuevo Alumno
+                case "1.5":
                     registrarNuevoAlumno();
                     break;
-
                 case "0":
-                    System.out.println("Saliendo de Gestión...");
-                    break; // La acción es salir, el bucle lo detecta
-
+                    System.out.println("🔙 Saliendo de Gestión...");
+                    break;
                 default:
-                    System.out.println("⚠️ Opción no válida en el submenú de Gestión.");
+                    System.out.println("⚠️ Opción no válida. Intenta de nuevo.");
             }
-
-        } while (!op.equals("0")); // La condición se repite hasta que op sea "0"
+        } while (!op.equals("0"));
     }
 
     public static void listarCursos() {
@@ -129,7 +119,7 @@ public class Main {
         Collection<Curso> listaCursos = gestor.obtenerTodosLosCursos();
 
         if (listaCursos.isEmpty()) {
-            System.out.println("No hay cursos registrados en el sistema.");
+            System.out.println("No hay cursos registrados.");
             return;
         }
 
@@ -141,7 +131,7 @@ public class Main {
             System.out.println("➡️ Cupos: " + curso.getCuposDisponibles() + "/" + curso.getCupoMaximo() + (curso.getCuposDisponibles() == 0 ? " (LLENO!)" : ""));
             System.out.println("🏷️  Áreas: " + curso.getAreas());
         }
-        System.out.println("----------------------------------------");
+        System.out.println("------------------------------------------");
     }
 
     public static void registrarNuevoCurso() {
@@ -217,8 +207,6 @@ public class Main {
 
     public static void menuInscripciones() {
         String op = "";
-
-        // El bucle do-while mantiene la persistencia
         do {
             System.out.println("\n--- ✍️ INSCRIPCIONES ---");
             System.out.println("-------------------------");
@@ -230,30 +218,26 @@ public class Main {
             op = scanner.nextLine();
 
             switch (op) {
-                case "1": // Inscribir
-                    System.out.print("ID del Alumno a inscribir: ");
+                case "1":
+                    System.out.print("ID del Alumno: ");
                     String idA_inscribir = scanner.nextLine();
                     System.out.print("ID del Curso: ");
                     String idC_inscribir = scanner.nextLine();
                     gestor.inscribirAlumnoEnCurso(idA_inscribir, idC_inscribir);
                     break;
-
-                case "2": // Dar de baja
+                case "2":
                     System.out.print("ID del Alumno a dar de baja: ");
                     String idA_baja = scanner.nextLine();
                     System.out.print("ID del Curso: ");
                     String idC_baja = scanner.nextLine();
                     gestor.darDeBajaAlumnoDelCurso(idA_baja, idC_baja);
                     break;
-
                 case "0":
-                    System.out.println("Saliendo de Inscripciones...");
-                    break; // Sale del switch, el do-while termina
-
+                    System.out.println("🔙 Saliendo de Inscripciones...");
+                    break;
                 default:
-                    System.out.println("⚠️ Opción no válida.");
+                    System.out.println("⚠️ Opción no válida. Intenta de nuevo.");
             }
-
         } while (!op.equals("0"));
     }
 
@@ -292,8 +276,6 @@ public class Main {
 
     public static void menuReportes() {
         String op = "";
-
-        // El bucle do-while mantiene al usuario en el submenú de Reportes
         do {
             System.out.println("\n--- 📊 REPORTES Y ESTADÍSTICAS ---");
             System.out.println("---------------------------------");
@@ -305,12 +287,11 @@ public class Main {
             System.out.print("Elige una opción: ");
             op = scanner.nextLine();
 
-            // Usamos Integer.parseInt() para el switch, manejando el error
             int opcionNumerica;
             try {
                 opcionNumerica = Integer.parseInt(op);
             } catch (NumberFormatException e) {
-                opcionNumerica = -1; // Valor no válido
+                opcionNumerica = -1;
             }
 
             switch (opcionNumerica) {
@@ -328,12 +309,11 @@ public class Main {
                     gestor.cursosConMasDemanda();
                     break;
                 case 0:
-                    System.out.println("Saliendo de Reportes...");
+                    System.out.println("🔙 Saliendo de Reportes...");
                     break;
                 default:
-                    System.out.println("⚠️ Opción no válida en el submenú de Reportes.");
+                    System.out.println("⚠️ Opción no válida.");
             }
-
-        } while (!op.equals("0")); // Condición: salir solo si la opción es "0"
+        } while (!op.equals("0"));
     }
 }
