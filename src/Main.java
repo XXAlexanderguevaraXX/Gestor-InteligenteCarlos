@@ -132,11 +132,12 @@ public class Main {
         }
 
         for (Curso curso : listaCursos) {
-            System.out.println("----------------------------------------");
-            System.out.println("ID: " + curso.getIdCurso());
-            System.out.println("Nombre: " + curso.getNombre());
-            System.out.println("Cupos disponibles: " + curso.getCuposDisponibles() + "/" + curso.getCupoMaximo());
-            System.out.println("Áreas: " + curso.getAreas());
+            System.out.println("------------------------------------------");
+            System.out.println("🆔 ID: " + curso.getIdCurso());
+            System.out.println("📚 Nombre: " + curso.getNombre());
+            System.out.println("👨‍🏫 Docente: " + curso.getDocente());
+            System.out.println("➡️ Cupos: " + curso.getCuposDisponibles() + "/" + curso.getCupoMaximo() + (curso.getCuposDisponibles() == 0 ? " (LLENO!)" : ""));
+            System.out.println("🏷️  Áreas: " + curso.getAreas());
         }
         System.out.println("----------------------------------------");
     }
