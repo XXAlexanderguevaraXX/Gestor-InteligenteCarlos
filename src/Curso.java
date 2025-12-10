@@ -1,4 +1,3 @@
-import java.util.HashSet;
 import java.util.Set;
 
 public class Curso {
@@ -7,8 +6,8 @@ public class Curso {
     private String docente;
     private int cupoMaximo;
     private int cuposDisponibles;
-    public int creditos;
-    private Set<String> areas; // Conjuntos
+    private int creditos;
+    private Set<String> areas; // Conjuntos: Áreas/temas del curso.
 
     public Curso(String idCurso, String nombre, String docente, int cupoMaximo, int creditos, Set<String> areas) {
         this.idCurso = idCurso;
@@ -20,13 +19,16 @@ public class Curso {
         this.areas = areas;
     }
 
-    // Getters y Setters
+    // Getters
     public String getIdCurso() { return idCurso; }
     public String getNombre() { return nombre; }
+    public String getDocente() { return docente; }
     public int getCupoMaximo() { return cupoMaximo; }
     public int getCuposDisponibles() { return cuposDisponibles; }
+    public int getCreditos() { return creditos; }
     public Set<String> getAreas() { return areas; }
 
+    // Métodos de utilidad para cupos
     public boolean disminuirCupo() {
         if (cuposDisponibles > 0) {
             cuposDisponibles--;
@@ -44,6 +46,7 @@ public class Curso {
     @Override
     public String toString() {
         return "ID: " + idCurso + " | Nombre: " + nombre + " | Docente: " + docente +
-                " | Cupo: " + cuposDisponibles + "/" + cupoMaximo + " | Áreas: " + areas;
+                " | Cupo: " + cuposDisponibles + "/" + cupoMaximo + " | Créditos: " + creditos +
+                " | Áreas: " + areas;
     }
 }
