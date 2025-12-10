@@ -71,15 +71,17 @@ public class Main {
 
         // El bucle do-while mantiene al usuario en el submenú (persistencia)
         do {
-            System.out.println("\n--- 1. GESTIÓN DE ALUMNOS Y CURSOS ---");
-            System.out.println("1.1. Listar todos los cursos existentes");
-            System.out.println("1.2. Consultar curso por ID");
-            System.out.println("1.3. Consultar alumno por ID");
-            System.out.println("1.4. Registrar nuevo curso");
-            System.out.println("1.5. Registrar nuevo alumno");
-            System.out.println("0. Volver al Menú Principal");
-            System.out.print("Opción: ");
-            op = scanner.nextLine(); // Lee la opción como String
+            System.out.println("\n--- 📚 GESTIÓN DE ALUMNOS Y CURSOS ---");
+            System.out.println("------------------------------------");
+            System.out.println("1.1. 📜 Listar todos los cursos existentes");
+            System.out.println("1.2. 🔍 Consultar curso por ID");
+            System.out.println("1.3. 🧑‍🎓 Consultar alumno por ID");
+            System.out.println("1.4. ➕ Registrar nuevo curso");
+            System.out.println("1.5. 👤 Registrar nuevo alumno");
+            System.out.println("0. 🔙 Volver al Menú Principal");
+            System.out.println("------------------------------------");
+            System.out.print("Elige una opción: ");
+            op = scanner.nextLine();
 
             // El switch evalúa la opción elegida
             switch (op) {
