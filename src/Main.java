@@ -76,10 +76,7 @@ public class Main {
 
         switch (op) {
             case "1.1":
-                System.out.print("ID del Curso: ");
-                String idC = scanner.nextLine();
-                Curso c = gestor.consultarCurso(idC);
-                System.out.println(c != null ? c : "⚠️ Curso no encontrado.");
+                listarCursos();
                 break;
 
             case "1.2":
