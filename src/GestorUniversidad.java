@@ -1,14 +1,15 @@
 import java.util.*;
 
 public class GestorUniversidad {
-    // 1. Tabla Hash: Almacena Alumnos y Cursos por ID
+    // 1. Tabla Hash (HashMap): Almacena Alumnos y Cursos por ID
     private Map<String, Curso> cursos;
     private Map<String, Alumno> alumnos;
 
-    // 2. Montículo (Heap): Lista de espera por curso. PriorityQueue usa el comparador
+    // 2. Montículo (Heap/PriorityQueue): Lista de espera por curso
+    // La clave es el idCurso, el valor es el Heap de Alumnos ordenado por prioridad.
     private Map<String, PriorityQueue<Alumno>> listasEspera;
 
-    // 3. Diccionario: idCurso -> lista de idAlumnos inscritos (para reportes y consultas)
+    // 3. Diccionario (HashMap): idCurso -> lista de idAlumnos inscritos
     private Map<String, List<String>> inscripcionesCurso;
 
     public GestorUniversidad() {
@@ -27,25 +28,31 @@ public class GestorUniversidad {
         return (a1, a2) -> {
             // 1. Promedio (Descendente: a2.promedio - a1.promedio)
             if (a1.getPromedio() != a2.getPromedio()) {
+                // Si el promedio es diferente, el que tiene mayor promedio va primero (a2 primero)
                 return Double.compare(a2.getPromedio(), a1.getPromedio());
             }
-            // 2. Semestre (Descendente: a2.semestre - a1.semestre)
+            // 2. Semestre (Descendente: si los promedios son iguales, el de mayor semestre va primero)
             return Integer.compare(a2.getSemestre(), a1.getSemestre());
         };
     }
 
     private void inicializarListaEspera(String idCurso) {
         if (!listasEspera.containsKey(idCurso)) {
+            // Inicializa el Heap con el comparador de prioridad
             listasEspera.put(idCurso, new PriorityQueue<>(obtenerComparadorListaEspera()));
             inscripcionesCurso.put(idCurso, new ArrayList<>());
         }
+    }
+
+    public Collection<Curso> obtenerTodosLosCursos() {
+        return cursos.values();
     }
 
     // --- 1. Gestión de alumnos y cursos ---
 
     public void registrarAlumno(Alumno alumno) {
         if (alumnos.containsKey(alumno.getIdAlumno())) {
-            System.out.println("Error: Alumno con ID " + alumno.getIdAlumno() + " ya existe.");
+            System.out.println("⚠️ Error: Alumno con ID " + alumno.getIdAlumno() + " ya existe.");
             return;
         }
         alumnos.put(alumno.getIdAlumno(), alumno);
@@ -54,7 +61,7 @@ public class GestorUniversidad {
 
     public void registrarCurso(Curso curso) {
         if (cursos.containsKey(curso.getIdCurso())) {
-            System.out.println("Error: Curso con ID " + curso.getIdCurso() + " ya existe.");
+            System.out.println("⚠️ Error: Curso con ID " + curso.getIdCurso() + " ya existe.");
             return;
         }
         cursos.put(curso.getIdCurso(), curso);
@@ -77,24 +84,23 @@ public class GestorUniversidad {
         Curso curso = consultarCurso(idCurso);
 
         if (alumno == null || curso == null) {
-            System.out.println("Error: Alumno o curso no encontrado.");
+            System.out.println("⚠️ Error: Alumno o curso no encontrado.");
             return;
         }
 
-        // Verificar si ya está inscrito
         if (alumno.getCursosInscritos().contains(idCurso)) {
             System.out.println("⚠️ Alumno " + alumno.getNombre() + " ya está inscrito en " + curso.getNombre());
             return;
         }
 
         if (curso.getCuposDisponibles() > 0) {
-            // Si hay cupo: Inscribir
+            // Inscribir y disminuir cupo
             curso.disminuirCupo();
             alumno.addCursoInscrito(idCurso);
             inscripcionesCurso.get(idCurso).add(idAlumno);
             System.out.println("✅ Inscripción exitosa: " + alumno.getNombre() + " en " + curso.getNombre());
         } else {
-            // Si no hay cupo: Enviar a la lista de espera (Heap)
+            // Enviar a la lista de espera (Heap)
             PriorityQueue<Alumno> espera = listasEspera.get(idCurso);
             if (espera != null) {
                 if (!espera.contains(alumno)) {
@@ -103,8 +109,6 @@ public class GestorUniversidad {
                 } else {
                     System.out.println("⚠️ Alumno ya se encuentra en la lista de espera.");
                 }
-            } else {
-                System.out.println("Error interno: Lista de espera no inicializada.");
             }
         }
     }
@@ -115,15 +119,16 @@ public class GestorUniversidad {
 
         if (alumno == null || curso == null) return;
 
+        // 1. Si estaba inscrito, dar de baja
         if (alumno.getCursosInscritos().remove(idCurso)) {
             curso.aumentarCupo();
             inscripcionesCurso.get(idCurso).remove(idAlumno);
             System.out.println("✅ Baja exitosa: " + alumno.getNombre() + " dado de baja de " + curso.getNombre() + ".");
 
-            // Al liberarse un cupo, intentar inscribir al siguiente de la lista de espera
+            // 2. Al liberarse un cupo, procesar lista de espera
             procesarListaDeEspera(idCurso);
         } else {
-            // Si no está inscrito, verificar si está en la lista de espera
+            // 3. Si no estaba inscrito, verificar si estaba en la lista de espera (Heap)
             PriorityQueue<Alumno> espera = listasEspera.get(idCurso);
             if (espera != null && espera.remove(alumno)) {
                 System.out.println("✅ Baja exitosa de Lista de Espera: " + alumno.getNombre() + " removido de la espera de " + curso.getNombre() + ".");
@@ -133,12 +138,12 @@ public class GestorUniversidad {
         }
     }
 
-    // --- 3. Listas de espera ---
+    // --- 3. Listas de espera (Heap) ---
 
     public void mostrarListaDeEspera(String idCurso) {
         Curso curso = consultarCurso(idCurso);
         if (curso == null) {
-            System.out.println("Error: Curso no encontrado.");
+            System.out.println("⚠️ Error: Curso no encontrado.");
             return;
         }
         PriorityQueue<Alumno> espera = listasEspera.get(idCurso);
@@ -162,22 +167,25 @@ public class GestorUniversidad {
         Curso curso = consultarCurso(idCurso);
         PriorityQueue<Alumno> espera = listasEspera.get(idCurso);
 
-        if (curso == null || espera == null || curso.getCuposDisponibles() <= 0 || espera.isEmpty()) {
+        if (curso == null || espera == null || espera.isEmpty() || curso.getCuposDisponibles() <= 0) {
+            // No hay curso, no hay espera, o no hay cupos disponibles.
+            if (curso != null && curso.getCuposDisponibles() <= 0) {
+                System.out.println("⚠️ No se puede procesar la lista: No hay cupos disponibles en el curso.");
+            }
             return;
         }
 
         // Sacar del heap (poll) al siguiente alumno de mayor prioridad
         Alumno siguiente = espera.poll();
 
-        // Intentar inscribirlo. Ya sabemos que hay cupo (curso.getCuposDisponibles() > 0)
-        // Usamos disminuirCupo() para manejar la transacción final.
+        // Intentar inscribirlo.
         if (curso.disminuirCupo()) {
             siguiente.addCursoInscrito(idCurso);
             inscripcionesCurso.get(idCurso).add(siguiente.getIdAlumno());
             System.out.println("\n📣 ¡Cupo liberado! " + siguiente.getNombre() + " ha sido inscrito en " + curso.getNombre() + " desde la Lista de Espera.");
         } else {
-            // Si falla la inscripción por alguna razón (debería ser imposible aquí)
-            espera.offer(siguiente); // Devolver al heap
+            // En caso de fallo, devolverlo a la cola, aunque no debería ocurrir si se verifica el cupo antes.
+            espera.offer(siguiente);
         }
     }
 
@@ -186,17 +194,19 @@ public class GestorUniversidad {
     public void recomendarCursos(String idAlumno) {
         Alumno alumno = consultarAlumno(idAlumno);
         if (alumno == null) {
-            System.out.println("Error: Alumno no encontrado.");
+            System.out.println("⚠️ Error: Alumno no encontrado.");
             return;
         }
 
         Map<String, Integer> afinidadCursos = new HashMap<>(); // idCurso -> Nro de coincidencias
 
         for (Curso curso : cursos.values()) {
+            // Copia de los conjuntos para no modificarlos
             Set<String> interesesAlumno = new HashSet<>(alumno.getIntereses());
             Set<String> areasCurso = curso.getAreas();
 
             // Intersección de conjuntos (afinidades)
+            // Esto deja en interesesAlumno solo los elementos que también están en areasCurso
             interesesAlumno.retainAll(areasCurso);
 
             int coincidencias = interesesAlumno.size();
@@ -209,7 +219,7 @@ public class GestorUniversidad {
         List<Map.Entry<String, Integer>> listaAfinidad = new ArrayList<>(afinidadCursos.entrySet());
         listaAfinidad.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
 
-        System.out.println("\n--- Recomendaciones para " + alumno.getNombre() + " ---");
+        System.out.println("\n--- Recomendaciones para " + alumno.getNombre() + " (Intereses: " + alumno.getIntereses() + ") ---");
         if (listaAfinidad.isEmpty()) {
             System.out.println("No se encontraron cursos con afinidad a sus intereses.");
             return;
@@ -217,7 +227,7 @@ public class GestorUniversidad {
 
         for (Map.Entry<String, Integer> entry : listaAfinidad) {
             Curso curso = consultarCurso(entry.getKey());
-            System.out.println("⭐ " + curso.getNombre() + " (Afinidad: " + entry.getValue() + " coincidencias)");
+            System.out.println("⭐ " + curso.getNombre() + " (Afinidad: " + entry.getValue() + " coincidencias) | Áreas: " + curso.getAreas());
         }
     }
 
@@ -225,7 +235,10 @@ public class GestorUniversidad {
 
     public void cargaAcademica(String idAlumno) {
         Alumno alumno = consultarAlumno(idAlumno);
-        if (alumno == null) return;
+        if (alumno == null) {
+            System.out.println("⚠️ Error: Alumno no encontrado.");
+            return;
+        }
 
         System.out.println("\n--- Carga Académica de " + alumno.getNombre() + " ---");
         if (alumno.getCursosInscritos().isEmpty()) {
@@ -237,8 +250,8 @@ public class GestorUniversidad {
         for (String idCurso : alumno.getCursosInscritos()) {
             Curso curso = consultarCurso(idCurso);
             if (curso != null) {
-                System.out.println(" - " + curso.getNombre() + " (" + curso.getIdCurso() + ") - " + curso.creditos + " créditos.");
-                totalCreditos += curso.creditos;
+                System.out.println(" - " + curso.getNombre() + " (" + curso.getIdCurso() + ") - " + curso.getCreditos() + " créditos.");
+                totalCreditos += curso.getCreditos();
             }
         }
         System.out.println("Total de créditos inscritos: " + totalCreditos);
@@ -247,16 +260,21 @@ public class GestorUniversidad {
     public void listarAlumnosInscritosEnCurso(String idCurso) {
         Curso curso = consultarCurso(idCurso);
         if (curso == null) {
-            System.out.println("Error: Curso no encontrado.");
+            System.out.println("⚠️ Error: Curso no encontrado.");
             return;
         }
 
         List<String> alumnosInscritos = inscripcionesCurso.get(idCurso);
         System.out.println("\n--- Alumnos Inscritos en " + curso.getNombre() + " (" + alumnosInscritos.size() + " inscritos) ---");
+        if (alumnosInscritos.isEmpty()) {
+            System.out.println("No hay alumnos inscritos en este curso.");
+            return;
+        }
+
         for (String idAlumno : alumnosInscritos) {
             Alumno alumno = consultarAlumno(idAlumno);
             if (alumno != null) {
-                System.out.println(" - " + alumno.getNombre() + " (ID: " + alumno.getIdAlumno() + ")");
+                System.out.println(" - " + alumno.getNombre() + " (ID: " + alumno.getIdAlumno() + ", Promedio: " + alumno.getPromedio() + ")");
             }
         }
     }
@@ -276,7 +294,12 @@ public class GestorUniversidad {
         List<Map.Entry<String, Integer>> listaDemanda = new ArrayList<>(demandaCursos.entrySet());
         listaDemanda.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
 
-        System.out.println("\n--- Cursos con Más Demanda (Inscritos + Espera) ---");
+        System.out.println("\n--- Top Cursos con Más Demanda (Inscritos + Espera) ---");
+        if (listaDemanda.isEmpty() || listaDemanda.get(0).getValue() == 0) {
+            System.out.println("No hay demanda registrada.");
+            return;
+        }
+
         for (int i = 0; i < Math.min(5, listaDemanda.size()); i++) {
             Map.Entry<String, Integer> entry = listaDemanda.get(i);
             Curso curso = consultarCurso(entry.getKey());
@@ -284,13 +307,8 @@ public class GestorUniversidad {
             int espera = listasEspera.get(curso.getIdCurso()).size();
             System.out.println((i + 1) + ". " + curso.getNombre() +
                     " | Demanda Total: " + entry.getValue() +
-                    " (Inscritos: " + inscritos + ", Espera: " + espera + ")");
+                    " (Inscritos: " + inscritos + ", Espera: " + espera + ") | Cupo Máximo: " + curso.getCupoMaximo());
         }
-    }
-
-    // Nuevo método para listar todos los cursos (para el menú) --7
-    public Collection<Curso> obtenerTodosLosCursos() {
-        return cursos.values();
     }
 
     // --- Carga de Datos Iniciales (Para pruebas) ---
@@ -299,7 +317,8 @@ public class GestorUniversidad {
         registrarCurso(new Curso("C101", "Introduccion a IA", "Dr. Lopez", 1, 5, new HashSet<>(Arrays.asList("IA", "algoritmos"))));
         registrarCurso(new Curso("C102", "Redes Avanzadas", "Ing. Perez", 5, 4, new HashSet<>(Arrays.asList("redes", "seguridad"))));
         registrarCurso(new Curso("C103", "Etica y Sociedad", "Dra. Mora", 10, 3, new HashSet<>(Arrays.asList("etica", "filosofia"))));
-        registrarCurso(new Curso("AVA124512", "Programacion I","Prof.Abraham Cervantes Villanueva", 20,5, new HashSet<>(Arrays.asList("Programacion 1","desarrollo"))));
+        registrarCurso(new Curso("C104", "Teoria de Juegos", "Mtro. Sanchez", 3, 4, new HashSet<>(Arrays.asList("matematicas", "algoritmos"))));
+
         // Alumnos
         registrarAlumno(new Alumno("A001", "Ana Gomez", 8, 9.5, new HashSet<>(Arrays.asList("IA", "redes"))));
         registrarAlumno(new Alumno("A002", "Juan Perez", 4, 8.2, new HashSet<>(Arrays.asList("matematicas", "etica"))));
@@ -309,7 +328,8 @@ public class GestorUniversidad {
         // Inscripciones Iniciales
         inscribirAlumnoEnCurso("A001", "C101"); // Cupo lleno (1/1)
         inscribirAlumnoEnCurso("A003", "C101"); // Va a Lista de Espera (Promedio 9.0, Semestre 8)
-        inscribirAlumnoEnCurso("A004", "C101"); // Va a Lista de Espera (Promedio 9.8, Semestre 6 -> Debería ser el primero en la lista de espera)
+        inscribirAlumnoEnCurso("A004", "C101"); // Va a Lista de Espera (Promedio 9.8, Semestre 6) -> Primer lugar en espera.
         inscribirAlumnoEnCurso("A002", "C103");
+        inscribirAlumnoEnCurso("A001", "C102");
     }
 }
