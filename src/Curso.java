@@ -7,7 +7,7 @@ public class Curso {
     private String docente;
     private int cupoMaximo;
     private int cuposDisponibles;
-    private int creditos;
+    public int creditos;
     private Set<String> areas; // Conjuntos
 
     public Curso(String idCurso, String nombre, String docente, int cupoMaximo, int creditos, Set<String> areas) {
