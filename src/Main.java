@@ -83,6 +83,13 @@ public class Main {
                 break;
 
             case "1.2":
+                System.out.print("ID del Curso: ");
+                String idC = scanner.nextLine();
+                Curso c = gestor.consultarCurso(idC);
+                System.out.println(c != null ? c : "⚠️ Curso no encontrado.");
+                break;
+
+            case "1.3":
                 System.out.print("ID del Alumno: ");
                 String idA = scanner.nextLine();
                 Alumno a = gestor.consultarAlumno(idA);
