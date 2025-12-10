@@ -21,8 +21,8 @@ public class Main {
                 case 3: menuListasEspera(); break;
                 case 4: pedirRecomendacion(); break;
                 case 5: menuReportes(); break;
-                case 6: menuGestion();
-                case 7: System.out.println("👋 Saliendo del sistema..."); break;
+                case 6: System.out.println("👋 Saliendo del sistema..."); break;
+                case 7:;
                 default: System.out.println("Opción no válida. Intente de nuevo.");
             }
 
