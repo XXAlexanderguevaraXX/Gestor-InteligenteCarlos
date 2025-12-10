@@ -159,58 +159,92 @@ public class Main {
             gestor.registrarCurso(nuevoCurso);
 
         } catch (InputMismatchException e) {
-            System.out.println("⚠️ Error en la entrada de datos. Asegúrese de ingresar números para Cupo y Créditos.");
+            System.out.println("⚠️ Error. Asegúrese de ingresar números para Cupo O Créditos Y que el Alumno no este previamente registrado");
             scanner.nextLine(); // Limpiar buffer
         }
     }
 
     public static void registrarNuevoAlumno() {
+        System.out.println("\n--- REGISTRO DE NUEVO ALUMNO ---");
+
         try {
-            System.out.println("\n--- REGISTRO DE NUEVO ALUMNO ---");
             System.out.print("ID del Alumno (ej: A100): ");
             String idAlumno = scanner.nextLine();
+
             System.out.print("Nombre: ");
             String nombre = scanner.nextLine();
+
+            // --- Solución 1: Leer todo como String y convertir ---
+            // (Esto es más robusto para la entrada de números y la gestión del buffer)
+
             System.out.print("Semestre: ");
-            int semestre = scanner.nextInt();
+            String semestreStr = scanner.nextLine();
+            int semestre = Integer.parseInt(semestreStr);
+
             System.out.print("Promedio (ej: 9.5): ");
-            double promedio = scanner.nextDouble();
-            scanner.nextLine(); // Consumir newline
+            String promedioStr = scanner.nextLine();
+            double promedio = Double.parseDouble(promedioStr);
+
+            // --- Intereses (Ahora sí lee la línea completa) ---
             System.out.print("Intereses (separados por coma, ej: etica, IA): ");
             String interesesStr = scanner.nextLine();
 
             Set<String> intereses = new HashSet<>(Arrays.asList(interesesStr.split("\\s*,\\s*")));
 
+            //registro de objeto alumno
             Alumno nuevoAlumno = new Alumno(idAlumno, nombre, semestre, promedio, intereses);
             gestor.registrarAlumno(nuevoAlumno);
 
         } catch (InputMismatchException e) {
-            System.out.println("⚠️ Error en la entrada de datos. Asegúrese de ingresar números para Semestre y Promedio.");
-            scanner.nextLine(); // Limpiar buffer
+            // Esto captura errores si se usa nextInt/nextDouble
+            System.out.println("⚠️ Error en la entrada de datos. El buffer del scanner falló.");
+            // Ya no es estrictamente necesario, pero es un buen guardián.
+        } catch (NumberFormatException e) {
+            // Esto captura si el usuario escribe texto donde se espera un número
+            System.out.println("⚠️ Error: Asegúrese de ingresar valores numéricos válidos para Semestre y Promedio.");
         }
     }
 
     // --- 2. Submenú de Inscripciones ---
 
     public static void menuInscripciones() {
-        System.out.println("\n--- 2. INSCRIPCIONES ---");
-        System.out.println("1. Inscribir alumno en curso");
-        System.out.println("2. Dar de baja alumno del curso");
-        System.out.print("Opción: ");
-        int op = leerOpcionPrincipal();
+        String op = "";
 
-        System.out.print("ID del Alumno: ");
-        String idA = scanner.nextLine();
-        System.out.print("ID del Curso: ");
-        String idC = scanner.nextLine();
+        // El bucle do-while mantiene la persistencia
+        do {
+            System.out.println("\n--- 2. INSCRIPCIONES ---");
+            System.out.println("1. Inscribir alumno en curso");
+            System.out.println("2. Dar de baja alumno del curso");
+            System.out.println("0. Volver al Menú Principal");
+            System.out.print("Opción: ");
+            op = scanner.nextLine(); // Leemos la opción como String para consistencia
 
-        if (op == 1) {
-            gestor.inscribirAlumnoEnCurso(idA, idC);
-        } else if (op == 2) {
-            gestor.darDeBajaAlumnoDelCurso(idA, idC);
-        } else {
-            System.out.println("⚠️ Opción no válida.");
-        }
+            switch (op) {
+                case "1": // Inscribir
+                    System.out.print("ID del Alumno a inscribir: ");
+                    String idA_inscribir = scanner.nextLine();
+                    System.out.print("ID del Curso: ");
+                    String idC_inscribir = scanner.nextLine();
+                    gestor.inscribirAlumnoEnCurso(idA_inscribir, idC_inscribir);
+                    break;
+
+                case "2": // Dar de baja
+                    System.out.print("ID del Alumno a dar de baja: ");
+                    String idA_baja = scanner.nextLine();
+                    System.out.print("ID del Curso: ");
+                    String idC_baja = scanner.nextLine();
+                    gestor.darDeBajaAlumnoDelCurso(idA_baja, idC_baja);
+                    break;
+
+                case "0":
+                    System.out.println("Saliendo de Inscripciones...");
+                    break; // Sale del switch, el do-while termina
+
+                default:
+                    System.out.println("⚠️ Opción no válida.");
+            }
+
+        } while (!op.equals("0"));
     }
 
     // --- 3. Submenú de Listas de Espera ---
@@ -247,25 +281,47 @@ public class Main {
     // --- 5. Submenú de Reportes ---
 
     public static void menuReportes() {
-        System.out.println("\n--- 5. REPORTES ---");
-        System.out.println("1. Carga académica de un alumno");
-        System.out.println("2. Lista de alumnos inscritos en un curso");
-        System.out.println("3. Cursos con más demanda (Inscritos + Lista de Espera)");
-        System.out.print("Opción: ");
-        int op = leerOpcionPrincipal();
+        String op = "";
 
-        if (op == 1) {
-            System.out.print("ID del Alumno: ");
-            String idA = scanner.nextLine();
-            gestor.cargaAcademica(idA);
-        } else if (op == 2) {
-            System.out.print("ID del Curso: ");
-            String idC = scanner.nextLine();
-            gestor.listarAlumnosInscritosEnCurso(idC);
-        } else if (op == 3) {
-            gestor.cursosConMasDemanda();
-        } else {
-            System.out.println("⚠️ Opción no válida.");
-        }
+        // El bucle do-while mantiene al usuario en el submenú de Reportes
+        do {
+            System.out.println("\n--- 5. REPORTES ---");
+            System.out.println("1. Carga académica de un alumno (Créditos)");
+            System.out.println("2. Lista de alumnos inscritos en un curso");
+            System.out.println("3. Cursos con más demanda (Tabla Hash y Heap)");
+            System.out.println("0. Volver al Menú Principal");
+            System.out.print("Opción: ");
+            op = scanner.nextLine(); // Leemos la opción como String
+
+            // Usamos Integer.parseInt() para el switch, manejando el error
+            int opcionNumerica;
+            try {
+                opcionNumerica = Integer.parseInt(op);
+            } catch (NumberFormatException e) {
+                opcionNumerica = -1; // Valor no válido
+            }
+
+            switch (opcionNumerica) {
+                case 1:
+                    System.out.print("ID del Alumno: ");
+                    String idA = scanner.nextLine();
+                    gestor.cargaAcademica(idA);
+                    break;
+                case 2:
+                    System.out.print("ID del Curso: ");
+                    String idC = scanner.nextLine();
+                    gestor.listarAlumnosInscritosEnCurso(idC);
+                    break;
+                case 3:
+                    gestor.cursosConMasDemanda();
+                    break;
+                case 0:
+                    System.out.println("Saliendo de Reportes...");
+                    break;
+                default:
+                    System.out.println("⚠️ Opción no válida en el submenú de Reportes.");
+            }
+
+        } while (!op.equals("0")); // Condición: salir solo si la opción es "0"
     }
 }
