@@ -21,6 +21,7 @@ public class Main {
                 case 4: pedirRecomendacion(); break;
                 case 5: menuReportes(); break;
                 case 6: System.out.println("👋 Saliendo del sistema..."); break;
+                case 7:;
                 default: System.out.println("Opción no válida. Intente de nuevo.");
             }
 
@@ -55,10 +56,10 @@ public class Main {
     }
 
     public static void menuGestion() {
-        // Implementar sub-menú si es necesario, o solo las opciones directas
         System.out.println("\n--- 1. GESTIÓN ---");
         System.out.println("1.1. Consultar curso por ID");
         System.out.println("1.2. Consultar alumno por ID");
+        System.out.println("1.3. Listar todos los cursos existentes"); // NUEVA OPCIÓN
         System.out.print("Opción: ");
         String op = scanner.nextLine();
 
@@ -66,15 +67,18 @@ public class Main {
             System.out.print("ID del Curso: ");
             String id = scanner.nextLine();
             Curso c = gestor.consultarCurso(id);
-            System.out.println(c != null ? c : "Curso no encontrado.");
+            System.out.println(c != null ? c : "⚠️ Curso no encontrado.");
         } else if (op.equals("1.2")) {
             System.out.print("ID del Alumno: ");
             String id = scanner.nextLine();
             Alumno a = gestor.consultarAlumno(id);
-            System.out.println(a != null ? a : "Alumno no encontrado.");
+            System.out.println(a != null ? a : "⚠️ Alumno no encontrado.");
+        } else if (op.equals("1.3")) { // Lógica del nuevo case
+            listarCursos();
+        } else {
+            System.out.println("⚠️ Opción no válida en el submenú de Gestión.");
         }
     }
-
     public static void menuInscripciones() {
         System.out.println("\n--- 2. INSCRIPCIONES ---");
         System.out.println("1. Inscribir alumno en curso");
