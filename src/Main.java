@@ -79,6 +79,27 @@ public class Main {
             System.out.println("⚠️ Opción no válida en el submenú de Gestión.");
         }
     }
+
+    public static void listarCursos() {
+        System.out.println("\n--- LISTA DE CURSOS EXISTENTES ---");
+        Collection<Curso> listaCursos = gestor.obtenerTodosLosCursos();
+
+        if (listaCursos.isEmpty()) {
+            System.out.println("No hay cursos registrados en el sistema.");
+            return;
+        }
+
+        // Iterar y mostrar la información clave de cada curso
+        for (Curso curso : listaCursos) {
+            System.out.println("----------------------------------------");
+            System.out.println("ID: " + curso.getIdCurso());
+            System.out.println("Nombre: " + curso.getNombre());
+            System.out.println("Cupos disponibles: " + curso.getCuposDisponibles() + "/" + curso.getCupoMaximo());
+            System.out.println("Áreas: " + curso.getAreas());
+        }
+        System.out.println("----------------------------------------");
+    }
+
     public static void menuInscripciones() {
         System.out.println("\n--- 2. INSCRIPCIONES ---");
         System.out.println("1. Inscribir alumno en curso");
