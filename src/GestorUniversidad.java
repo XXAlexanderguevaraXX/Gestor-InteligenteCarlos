@@ -4,6 +4,7 @@ public class GestorUniversidad {
     // 1. Tabla Hash (HashMap): Almacena Alumnos y Cursos por ID
     private Map<String, Curso> cursos;
     private Map<String, Alumno> alumnos;
+    private Map<String, ListaEsperaHeap> listasEspera;
 
     // 2. Montículo (Heap/PriorityQueue): Lista de espera por curso
     // La clave es el idCurso, el valor es el Heap de Alumnos ordenado por prioridad.
