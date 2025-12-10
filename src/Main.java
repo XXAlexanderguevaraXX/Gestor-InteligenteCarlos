@@ -217,12 +217,14 @@ public class Main {
 
         // El bucle do-while mantiene la persistencia
         do {
-            System.out.println("\n--- 2. INSCRIPCIONES ---");
-            System.out.println("1. Inscribir alumno en curso");
-            System.out.println("2. Dar de baja alumno del curso");
-            System.out.println("0. Volver al Menú Principal");
-            System.out.print("Opción: ");
-            op = scanner.nextLine(); // Leemos la opción como String para consistencia
+            System.out.println("\n--- ✍️ INSCRIPCIONES ---");
+            System.out.println("-------------------------");
+            System.out.println("1. 📝 Inscribir alumno en curso");
+            System.out.println("2. ❌ Dar de baja alumno del curso");
+            System.out.println("0. 🔙 Volver al Menú Principal");
+            System.out.println("-------------------------");
+            System.out.print("Elige una opción: ");
+            op = scanner.nextLine();
 
             switch (op) {
                 case "1": // Inscribir
