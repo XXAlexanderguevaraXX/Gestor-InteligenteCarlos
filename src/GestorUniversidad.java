@@ -288,13 +288,18 @@ public class GestorUniversidad {
         }
     }
 
+    // Nuevo método para listar todos los cursos (para el menú) --7
+    public Collection<Curso> obtenerTodosLosCursos() {
+        return cursos.values();
+    }
+
     // --- Carga de Datos Iniciales (Para pruebas) ---
     private void cargarDatosIniciales() {
         // Cursos
         registrarCurso(new Curso("C101", "Introduccion a IA", "Dr. Lopez", 1, 5, new HashSet<>(Arrays.asList("IA", "algoritmos"))));
         registrarCurso(new Curso("C102", "Redes Avanzadas", "Ing. Perez", 5, 4, new HashSet<>(Arrays.asList("redes", "seguridad"))));
         registrarCurso(new Curso("C103", "Etica y Sociedad", "Dra. Mora", 10, 3, new HashSet<>(Arrays.asList("etica", "filosofia"))));
-
+        registrarCurso(new Curso("AVA124512", "Programacion I","Prof.Abraham Cervantes Villanueva", 20,5, new HashSet<>(Arrays.asList("Programacion 1","desarrollo"))));
         // Alumnos
         registrarAlumno(new Alumno("A001", "Ana Gomez", 8, 9.5, new HashSet<>(Arrays.asList("IA", "redes"))));
         registrarAlumno(new Alumno("A002", "Juan Perez", 4, 8.2, new HashSet<>(Arrays.asList("matematicas", "etica"))));
