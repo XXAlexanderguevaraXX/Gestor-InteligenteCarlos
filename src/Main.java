@@ -52,13 +52,16 @@ public class Main {
     // --- Menú Principal ---
 
     public static void mostrarMenuPrincipal() {
-        System.out.println("\n--- MENÚ PRINCIPAL ---");
-        System.out.println("1. Gestión de alumnos y cursos");
-        System.out.println("2. Inscripciones");
-        System.out.println("3. Listas de espera");
-        System.out.println("4. Recomendaciones");
-        System.out.println("5. Reportes");
-        System.out.println("6. Salir");
+        System.out.println("\n=============================================");
+        System.out.println("✨ UNIVERSIDAD GESTIÓN 💻 | MENÚ PRINCIPAL");
+        System.out.println("=============================================");
+        System.out.println("1️⃣. 📚 Gestión de Alumnos y Cursos");
+        System.out.println("2️⃣. ✍️ Inscripciones (Matrícula y Bajas)");
+        System.out.println("3️⃣. ⏳ Listas de Espera (Prioridad: Heap Manual)");
+        System.out.println("4️⃣. ⭐ Recomendaciones (Afinidad de Intereses)");
+        System.out.println("5️⃣. 📊 Reportes y Estadísticas");
+        System.out.println("6️⃣. 🚪 Salir del Sistema");
+        System.out.println("=============================================");
     }
 
     // --- 1. Submenú de Gestión ---
