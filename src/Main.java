@@ -292,13 +292,15 @@ public class Main {
 
         // El bucle do-while mantiene al usuario en el submenú de Reportes
         do {
-            System.out.println("\n--- 5. REPORTES ---");
-            System.out.println("1. Carga académica de un alumno (Créditos)");
-            System.out.println("2. Lista de alumnos inscritos en un curso");
-            System.out.println("3. Cursos con más demanda (Tabla Hash y Heap)");
-            System.out.println("0. Volver al Menú Principal");
-            System.out.print("Opción: ");
-            op = scanner.nextLine(); // Leemos la opción como String
+            System.out.println("\n--- 📊 REPORTES Y ESTADÍSTICAS ---");
+            System.out.println("---------------------------------");
+            System.out.println("1. 🎓 Carga académica de un alumno (Créditos)");
+            System.out.println("2. 📋 Lista de alumnos inscritos en un curso");
+            System.out.println("3. 🔥 Cursos con más demanda (Inscritos + Espera)");
+            System.out.println("0. 🔙 Volver al Menú Principal");
+            System.out.println("---------------------------------");
+            System.out.print("Elige una opción: ");
+            op = scanner.nextLine();
 
             // Usamos Integer.parseInt() para el switch, manejando el error
             int opcionNumerica;
