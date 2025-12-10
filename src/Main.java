@@ -64,15 +64,19 @@ public class Main {
     // --- 1. Submenú de Gestión ---
 
     public static void menuGestion() {
-        System.out.println("\n--- 1. GESTIÓN DE ALUMNOS Y CURSOS ---");
-        System.out.println("1.1. Listar todos los cursos existentes");
-        System.out.println("1.2. Consultar curso por ID");
-        System.out.println("1.3. Consultar alumno por ID");
-        System.out.println("1.4. Registrar nuevo curso");
-        System.out.println("1.5. Registrar nuevo alumno");
-        System.out.println("0. Volver al Menú Principal");
-        System.out.print("Opción: ");
-        String op = scanner.nextLine();
+        String op = "";
+
+        // El bucle do-while mantiene al usuario en el submenú (persistencia)
+        do {
+            System.out.println("\n--- 1. GESTIÓN DE ALUMNOS Y CURSOS ---");
+            System.out.println("1.1. Listar todos los cursos existentes");
+            System.out.println("1.2. Consultar curso por ID");
+            System.out.println("1.3. Consultar alumno por ID");
+            System.out.println("1.4. Registrar nuevo curso");
+            System.out.println("1.5. Registrar nuevo alumno");
+            System.out.println("0. Volver al Menú Principal");
+            System.out.print("Opción: ");
+            op = scanner.nextLine(); // Lee la opción como String
 
         switch (op) {
             case "1.1":
