@@ -123,7 +123,9 @@ public class Main {
     }
 
     public static void listarCursos() {
-        System.out.println("\n--- LISTA DE CURSOS EXISTENTES ---");
+        System.out.println("\n==========================================");
+        System.out.println("✅ LISTA DE CURSOS EXISTENTES EN EL SISTEMA");
+        System.out.println("==========================================");
         Collection<Curso> listaCursos = gestor.obtenerTodosLosCursos();
 
         if (listaCursos.isEmpty()) {
