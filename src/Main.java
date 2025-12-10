@@ -96,10 +96,6 @@ public class Main {
                 System.out.println(a != null ? a : "⚠️ Alumno no encontrado.");
                 break;
 
-            case "1.3":
-                listarCursos();
-                break;
-
             case "1.4":
                 registrarNuevoCurso();
                 break;
