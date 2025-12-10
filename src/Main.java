@@ -78,40 +78,43 @@ public class Main {
             System.out.print("Opción: ");
             op = scanner.nextLine(); // Lee la opción como String
 
-        switch (op) {
-            case "1.1":
-                listarCursos();
-                break;
+            // El switch evalúa la opción elegida
+            switch (op) {
+                case "1.1": // Listar Cursos
+                    listarCursos();
+                    break;
 
-            case "1.2":
-                System.out.print("ID del Curso: ");
-                String idC = scanner.nextLine();
-                Curso c = gestor.consultarCurso(idC);
-                System.out.println(c != null ? c : "⚠️ Curso no encontrado.");
-                break;
+                case "1.2": // Consultar Curso por ID
+                    System.out.print("ID del Curso: ");
+                    String idC = scanner.nextLine();
+                    Curso c = gestor.consultarCurso(idC);
+                    System.out.println(c != null ? c : "⚠️ Curso no encontrado.");
+                    break;
 
-            case "1.3":
-                System.out.print("ID del Alumno: ");
-                String idA = scanner.nextLine();
-                Alumno a = gestor.consultarAlumno(idA);
-                System.out.println(a != null ? a : "⚠️ Alumno no encontrado.");
-                break;
+                case "1.3": // Consultar Alumno por ID
+                    System.out.print("ID del Alumno: ");
+                    String idA = scanner.nextLine();
+                    Alumno a = gestor.consultarAlumno(idA);
+                    System.out.println(a != null ? a : "⚠️ Alumno no encontrado.");
+                    break;
 
-            case "1.4":
-                registrarNuevoCurso();
-                break;
+                case "1.4": // Registrar Nuevo Curso
+                    registrarNuevoCurso();
+                    break;
 
-            case "1.5":
-                registrarNuevoAlumno();
-                break;
+                case "1.5": // Registrar Nuevo Alumno
+                    registrarNuevoAlumno();
+                    break;
 
-            case "0":
-                System.out.println("Volviendo al menú principal...");
-                break;
+                case "0":
+                    System.out.println("Saliendo de Gestión...");
+                    break; // La acción es salir, el bucle lo detecta
 
-            default:
-                System.out.println("⚠️ Opción no válida en el submenú de Gestión.");
-        }
+                default:
+                    System.out.println("⚠️ Opción no válida en el submenú de Gestión.");
+            }
+
+        } while (!op.equals("0")); // La condición se repite hasta que op sea "0"
     }
 
     public static void listarCursos() {
